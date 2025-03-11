@@ -32,7 +32,7 @@ def process_file(input_file):
 
     # Extract base name for output file
     base_name = os.path.basename(input_file)
-    output_file = os.path.join("output", f"OUTPUT_{base_name}.txt")
+    output_file = os.path.join("output", f"OUTPUT_{base_name}")
 
     # Extract numbers
     numbers = extract_numbers(input_file)
