@@ -9,21 +9,24 @@ def extract_numbers(input_file):
     Extract free-standing numbers with periods or dashes,
     OR free-standing numbers with 1-3 trailing letters from a file.
 
-    Returns a list of extracted numbers.
+    Returns a list of unique extracted numbers, excluding:
+    - Single-digit numbers
+    - Numbers separated by semicolons (likely times)
     """
-    pattern = r"\b\d+((\.\d+)+|(-\d+)+)?([a-zA-Z]{1,3})?\b"
+    pattern = r"\b\d{2,}((\.\d+)+|(-\d+)+)?([a-zA-Z]{1,3})?\b"
 
     with open(input_file, "r", encoding="utf-8") as f:
         content = f.read()
 
-    matches = re.findall(pattern, content)
-
     # Process matches to get the full strings
-    result = []
+    unique_numbers = set()
     for match in re.finditer(pattern, content):
-        result.append(match.group(0))
+        number = match.group(0)
+        # Skip numbers containing semicolons (likely times)
+        if ":" not in number:
+            unique_numbers.add(number)
 
-    return result
+    return sorted(list(unique_numbers))
 
 
 def process_file(input_file):
@@ -32,7 +35,7 @@ def process_file(input_file):
 
     # Extract base name for output file
     base_name = os.path.basename(input_file)
-    output_file = os.path.join("output", f"OUTPUT_{base_name}")
+    output_file = os.path.join("output", f"OUTPUT_{base_name}.txt")
 
     # Extract numbers
     numbers = extract_numbers(input_file)
